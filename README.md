@@ -53,9 +53,10 @@ No Dropout or BatchNorm. For anomaly detection, the model must reconstruct norma
 ```
 ├── pytorch_model.ipynb   # main notebook
 ├── autoencoder.pt        # saved model weights (generated on first run)
-├── weights.npy           # saved feature weights (generated on first run)
-└── creditcard.csv        # dataset (download from Kaggle, see below)
+└── weights.npy           # saved feature weights (generated on first run)
 ```
+
+> `creditcard.csv` is not included in this repository due to file size. Download it from Kaggle (see Setup).
 
 ---
 
