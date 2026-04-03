@@ -1,0 +1,11 @@
+creditcard.csv
+*.csv
+pytorch_model.ipynb
+build_nb.py
+save_artifacts.py
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
