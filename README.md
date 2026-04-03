@@ -48,12 +48,68 @@ No Dropout or BatchNorm. For anomaly detection, the model must reconstruct norma
 
 ---
 
+## REST API
+
+The model is deployed as a public REST API built with **FastAPI** and served via **Docker** on Render.
+
+**Live endpoint:** `https://fraud-detection-api-cccu.onrender.com/docs`
+
+### Predict endpoint
+
+```
+POST /predict
+```
+
+Request body (JSON):
+```json
+{
+  "Time": 0.0,
+  "V1": -1.3598, "V2": -0.0728, "...",
+  "V28": -0.021,
+  "Amount": 149.62
+}
+```
+
+Response:
+```json
+{
+  "anomaly_score": 0.034521,
+  "is_fraud": false,
+  "threshold": 11.979988
+}
+```
+
+`Time` and `Amount` are raw values — the API standardises them internally. `V1–V28` are passed as-is (already PCA-scaled in the dataset).
+
+### Run locally with Docker
+
+```bash
+# 1. Generate scaler and threshold artifacts (requires creditcard.csv)
+python save_artifacts.py
+
+# 2. Build and start
+docker compose up --build
+
+# 3. Open interactive docs
+http://localhost:8000/docs
+```
+
+---
+
 ## Project Structure
 
 ```
 ├── pytorch_model.ipynb   # main notebook
-├── autoencoder.pt        # saved model weights (generated on first run)
-└── weights.npy           # saved feature weights (generated on first run)
+├── autoencoder.pt        # saved model weights
+├── weights.npy           # saved feature weights
+├── scaler.pkl            # fitted StandardScalers for Time and Amount
+├── config.json           # threshold and feature order
+├── save_artifacts.py     # generates scaler.pkl and config.json
+├── requirements.txt      # pinned dependencies
+├── Dockerfile            # CPU-only PyTorch image
+├── docker-compose.yml    # single-command deploy
+└── app/
+    └── main.py           # FastAPI application
 ```
 
 > `creditcard.csv` is not included in this repository due to file size. Download it from Kaggle (see Setup).
