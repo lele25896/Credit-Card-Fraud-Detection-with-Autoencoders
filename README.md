@@ -54,6 +54,8 @@ The model is deployed as a public REST API built with **FastAPI** and served via
 
 **Live endpoint:** `https://fraud-detection-api-cccu.onrender.com/docs`
 
+**Interactive dashboard:** [credit-card-fraud-detection-with-autoencoders-g7pftctxnoutfp8a.streamlit.app](https://credit-card-fraud-detection-with-autoencoders-g7pftctxnoutfp8a.streamlit.app)
+
 ### Predict endpoint
 
 ```
