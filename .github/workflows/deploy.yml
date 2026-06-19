@@ -30,12 +30,10 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v2
 
       - name: Run tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}
         run: |
           pip install -r requirements-dev.txt -r requirements.txt
           pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
-          pytest -v
+          PYTHONPATH=. pytest -v
 
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
