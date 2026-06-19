@@ -1,0 +1,53 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [main]
+
+env:
+  PROJECT: fraud-detector-499714
+  REGION: europe-west1
+  AR_REPO: fraud-api
+  SERVICE: fraud-api
+
+permissions:
+  contents: read
+  id-token: write   # required for WIF
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to GCP (WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SA }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Run tests
+        run: |
+          pip install -r requirements-dev.txt -r requirements.txt
+          pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
+          pytest -v
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
+
+      - name: Build & push image
+        env:
+          IMG: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT }}/${{ env.AR_REPO }}/${{ env.SERVICE }}:${{ github.sha }}
+        run: |
+          docker build -t $IMG .
+          docker push $IMG
+
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT }}/${{ env.AR_REPO }}/${{ env.SERVICE }}:${{ github.sha }}
