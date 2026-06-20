@@ -4,10 +4,10 @@ WORKDIR /app
 
 # Install PyTorch CPU-only in a separate layer so Docker caches it independently
 # from application code changes (~250 MB wheel, avoids re-downloading on every build)
-COPY requirements.txt .
+COPY requirements-api.txt .
 RUN pip install --no-cache-dir torch==2.5.1 \
         --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements-api.txt
 
 # Copy model artifacts (creditcard.csv is excluded via .dockerignore)
 COPY autoencoder.pt  .

@@ -31,7 +31,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pip install -r requirements-dev.txt -r requirements.txt
+          pip install -r requirements-dev.txt -r requirements-api.txt
           pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu
           PYTHONPATH=. pytest -v
 
