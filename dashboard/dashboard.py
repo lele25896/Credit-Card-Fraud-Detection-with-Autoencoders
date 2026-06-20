@@ -12,7 +12,7 @@ import pandas as pd
 import requests
 import streamlit as st
 
-API_URL = "https://fraud-detection-api-cccu.onrender.com"
+API_URL = "https://fraud-api-d2kiv4fvwq-ew.a.run.app"
 
 # ── Preset transactions ────────────────────────────────────────────────────────
 PRESETS = {
