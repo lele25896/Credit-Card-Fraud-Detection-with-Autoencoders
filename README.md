@@ -50,11 +50,11 @@ No Dropout or BatchNorm. For anomaly detection, the model must reconstruct norma
 
 ## REST API
 
-The model is deployed as a public REST API built with **FastAPI** and served via **Docker** on Render.
+The model is deployed as a public REST API built with **FastAPI**, containerised with **Docker**, and served on **GCP Cloud Run** via GitHub Actions CI/CD.
 
-**Live endpoint:** `https://fraud-detection-api-cccu.onrender.com/docs`
+**Live endpoint:** `https://fraud-api-d2kiv4fvwq-ew.a.run.app/docs`
 
-**Interactive dashboard:** [credit-card-fraud-detection-with-autoencoders-g7pftctxnoutfp8a.streamlit.app](https://credit-card-fraud-detection-with-autoencoders-g7pftctxnoutfp8a.streamlit.app)
+**Interactive dashboard:** [credit-card-fraud-detection-with-autoencoders.streamlit.app](https://credit-card-fraud-detection-with-autoencoders.streamlit.app)
 
 ### Predict endpoint
 
