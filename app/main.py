@@ -14,7 +14,9 @@ Run via Docker:
 """
 
 import json
+import logging
 import pickle
+import sys
 from contextlib import asynccontextmanager
 
 import numpy as np
@@ -22,6 +24,9 @@ import torch
 import torch.nn as nn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(message)s")
+logger = logging.getLogger("fraud_api")
 
 
 # ── Model definition (must match autoencoder.pt exactly) ──────────────────────
@@ -68,8 +73,9 @@ async def lifespan(app: FastAPI):
     artifacts["threshold"]     = cfg["threshold"]
     artifacts["feature_order"] = cfg["feature_order"]
 
-    print(f"Model loaded. Threshold = {cfg['threshold']:.6f}")
+    logger.info(json.dumps({"message": "startup", "threshold": cfg["threshold"]}))
     yield
+    logger.info(json.dumps({"message": "shutdown"}))
     artifacts.clear()
 
 
@@ -184,11 +190,14 @@ def predict(transaction: TransactionFeatures):
             np.average((x - reconstruction) ** 2, axis=1, weights=weights)[0]
         )
 
-        return PredictionResponse(
+        result = PredictionResponse(
             anomaly_score=round(score, 6),
             is_fraud=score >= threshold,
             threshold=round(threshold, 6),
         )
+        logger.info(json.dumps({"message": "prediction", "score": result.anomaly_score, "is_fraud": result.is_fraud}))
+        return result
 
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception(json.dumps({"message": "predict_error"}))
+        raise HTTPException(status_code=500, detail="Internal server error")
