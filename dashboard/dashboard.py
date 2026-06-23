@@ -50,7 +50,7 @@ st.set_page_config(
 st.title("Credit Card Fraud Detection")
 st.caption(
     "Autoencoder-based anomaly detection · "
-    f"[API docs]({API_URL}/docs) · F1: 0.80 · ROC-AUC: 0.94"
+    f"[API docs]({API_URL}/docs) · F1: 0.81 · ROC-AUC: 0.93"
 )
 
 # ── Helper ─────────────────────────────────────────────────────────────────────
@@ -92,13 +92,13 @@ with tab1:
     # Key discriminative features as sliders
     st.markdown("**Key features** (most influential on fraud detection):")
     c1, c2, c3 = st.columns(3)
-    v17 = c1.slider("V17 (weight: 9.64)", -25.0, 25.0, float(preset["V17"]), 0.01)
-    v12 = c2.slider("V12 (weight: 3.58)", -25.0, 25.0, float(preset["V12"]), 0.01)
-    v14 = c3.slider("V14 (weight: 3.30)", -25.0, 25.0, float(preset["V14"]), 0.01)
+    v17 = c1.slider("V17 (weight: 9.36)", -25.0, 25.0, float(preset["V17"]), 0.01)
+    v12 = c2.slider("V12 (weight: 3.43)", -25.0, 25.0, float(preset["V12"]), 0.01)
+    v14 = c3.slider("V14 (weight: 3.60)", -25.0, 25.0, float(preset["V14"]), 0.01)
 
     c4, c5, c6 = st.columns(3)
-    v16 = c4.slider("V16 (weight: 2.79)", -25.0, 25.0, float(preset["V16"]), 0.01)
-    v10 = c5.slider("V10 (weight: 2.71)", -25.0, 25.0, float(preset["V10"]), 0.01)
+    v16 = c4.slider("V16 (weight: 2.82)", -25.0, 25.0, float(preset["V16"]), 0.01)
+    v10 = c5.slider("V10 (weight: 2.56)", -25.0, 25.0, float(preset["V10"]), 0.01)
     amount = c6.number_input("Amount (€)", min_value=0.0, value=float(preset["Amount"]), step=1.0)
 
     # Remaining features hidden in expander
