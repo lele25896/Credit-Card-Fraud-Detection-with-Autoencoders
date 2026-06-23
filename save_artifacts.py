@@ -50,20 +50,7 @@ print("Loading creditcard.csv ...")
 df = pd.read_csv("creditcard.csv")
 print(f"  {len(df):,} rows, {df['Class'].sum()} frauds")
 
-# ── 2. Fit scalers on raw columns BEFORE any transformation ───────────────────
-# NOTE: the notebook reuses one StandardScaler instance, calling fit_transform
-# on Amount first then on Time — which overwrites the Amount fit.
-# We use two separate scalers, each fitted independently on the raw column.
-scaler_amount = StandardScaler()
-scaler_time   = StandardScaler()
-scaler_amount.fit(df[["Amount"]])
-scaler_time.fit(df[["Time"]])
-
-# ── 3. Apply the same transforms the notebook applied ─────────────────────────
-df["Amount"] = scaler_amount.transform(df[["Amount"]])
-df["Time"]   = scaler_time.transform(df[["Time"]])
-
-# ── 4. Reproduce the exact same splits as the notebook ────────────────────────
+# ── 2. Reproduce the exact same splits as the notebook (on RAW data) ──────────
 feature_order = ["Time"] + [f"V{i}" for i in range(1, 29)] + ["Amount"]
 X = df[feature_order].values
 y = df["Class"].values
@@ -74,6 +61,15 @@ X_tv, X_test, y_tv, y_test = train_test_split(
 X_train, X_val, y_train, y_val = train_test_split(
     X_tv, y_tv, test_size=0.15, stratify=y_tv, random_state=42
 )
+
+# ── 3. Fit scalers on TRAIN only, then apply to every split (no leakage) ──────
+# Time is column 0, Amount is the last column of feature_order.
+# Two independent scalers (the notebook's single-scaler reuse overwrote the Amount fit).
+scaler_time   = StandardScaler().fit(X_train[:, [0]])
+scaler_amount = StandardScaler().fit(X_train[:, [-1]])
+for Xs in (X_train, X_val, X_test):
+    Xs[:, 0]  = scaler_time.transform(Xs[:, [0]]).ravel()
+    Xs[:, -1] = scaler_amount.transform(Xs[:, [-1]]).ravel()
 
 print(f"  Train: {X_train.shape[0]:,} | Val: {X_val.shape[0]:,} | Test: {X_test.shape[0]:,}")
 print(f"  Val frauds: {y_val.sum()}")

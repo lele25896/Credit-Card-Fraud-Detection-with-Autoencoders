@@ -1,5 +1,8 @@
 creditcard.csv
 build_nb.py
+__pycache__/
+*.pyc
+.pytest_cache/
 
 .terraform/
 *.tfstate

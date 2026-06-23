@@ -30,10 +30,12 @@ Evaluated on a held-out test set (20% of the dataset, stratified). Threshold sel
 
 | Model | F1 (Fraud) | Precision | Recall | ROC-AUC | Avg Precision |
 |---|---|---|---|---|---|
-| AE — MSE baseline | 0.61 | 0.60 | 0.63 | 0.941 | 0.571 |
-| AE — Weighted MSE | **0.80** | **0.79** | **0.82** | 0.936 | **0.682** |
+| AE — MSE baseline | 0.56 | 0.44 | 0.77 | 0.938 | 0.534 |
+| AE — Weighted MSE | **0.81** | **0.80** | **0.82** | 0.932 | **0.670** |
 
-The weighted score raises F1 from 0.61 to **0.80** with no retraining — only a change in how the anomaly score is computed.
+The weighted score raises F1 from 0.56 to **0.81** with no retraining — only a change in how the anomaly score is computed.
+
+> Scalers are fit on the training split only (no val/test leakage); weights and the decision threshold are calibrated on the validation set.
 
 ---
 
@@ -77,7 +79,7 @@ Response:
 {
   "anomaly_score": 0.034521,
   "is_fraud": false,
-  "threshold": 11.979988
+  "threshold": 11.465872
 }
 ```
 

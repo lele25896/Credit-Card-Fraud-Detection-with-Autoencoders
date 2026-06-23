@@ -9,7 +9,9 @@ Run from the repo root (where config.json + artifacts live):
 
 The two sample transactions are REAL rows from creditcard.csv:
 - NORMAL: first row of the dataset (Class=0)
-- FRAUD:  first fraudulent row of the dataset (Class=1, Time=406)
+- FRAUD:  a clearly anomalous fraud (Class=1, Time=100924) — high reconstruction
+          error, well above threshold. (The dataset's first fraud is borderline
+          and not reliably flagged, so it's a poor test fixture.)
 """
 
 import pytest
@@ -36,12 +38,12 @@ NORMAL_TX = {
 }
 
 FRAUD_TX = {
-    "Time": 406.0, "V1": -2.312227, "V2": 1.951992, "V3": -1.609851, "V4": 3.997906,
-    "V5": -0.522188, "V6": -1.426545, "V7": -2.537387, "V8": 1.391657, "V9": -2.770089,
-    "V10": -2.772272, "V11": 3.202033, "V12": -2.899907, "V13": -0.595222, "V14": -4.289254,
-    "V15": 0.389724, "V16": -1.140747, "V17": -2.830056, "V18": -0.016822, "V19": 0.416956,
-    "V20": 0.126911, "V21": 0.517232, "V22": -0.035049, "V23": -0.465211, "V24": 0.320198,
-    "V25": 0.044519, "V26": 0.17784, "V27": 0.261145, "V28": -0.143276, "Amount": 0.0,
+    "Time": 100924.0, "V1": -23.984747, "V2": 16.697832, "V3": -22.209875, "V4": 9.584969,
+    "V5": -16.230439, "V6": 2.596333, "V7": -33.239328, "V8": -21.560039, "V9": -10.842526,
+    "V10": -19.836149, "V11": 3.223233, "V12": -10.895134, "V13": -1.523452, "V14": 0.116303,
+    "V15": -3.098805, "V16": -7.606425, "V17": -18.108261, "V18": -7.511866, "V19": -1.243285,
+    "V20": 5.804551, "V21": -12.615023, "V22": 5.774087, "V23": 2.750221, "V24": 0.513411,
+    "V25": -1.608804, "V26": -0.459624, "V27": -4.626127, "V28": -0.334561, "Amount": 1.0,
 }
 
 

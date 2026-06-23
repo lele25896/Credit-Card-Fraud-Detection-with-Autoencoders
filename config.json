@@ -1,5 +1,5 @@
 {
-  "threshold": 11.979987945925439,
+  "threshold": 11.46587114435972,
   "model_path": "autoencoder.pt",
   "weights_path": "weights.npy",
   "scaler_path": "scaler.pkl",
@@ -36,7 +36,7 @@
     "V28",
     "Amount"
   ],
-  "val_f1": 0.7304,
-  "val_precision": 0.75,
+  "val_f1": 0.7568,
+  "val_precision": 0.8077,
   "val_recall": 0.7119
 }
