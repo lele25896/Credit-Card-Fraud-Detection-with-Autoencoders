@@ -7,4 +7,6 @@ __pycache__/
 .terraform/
 *.tfstate
 *.tfstate.backup
+# no secrets in terraform.tfvars (solo project/region/service_name) — serve alla CI
 *.tfvars
+!terraform.tfvars
