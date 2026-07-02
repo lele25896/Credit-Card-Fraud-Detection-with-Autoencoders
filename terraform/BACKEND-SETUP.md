@@ -37,7 +37,13 @@ gsutil iam ch serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount
 # gestione infra (se non già presenti)
 gcloud projects add-iam-policy-binding fraud-detector-499714 --member=serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount.com --role=roles/run.admin
 gcloud projects add-iam-policy-binding fraud-detector-499714 --member=serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount.com --role=roles/artifactregistry.admin
+# gestione delle google_project_service (list/enable API) nel main.tf
+gcloud projects add-iam-policy-binding fraud-detector-499714 --member=serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount.com --role=roles/serviceusage.serviceUsageAdmin
 ```
+
+> Prerequisito una-tantum: le API vanno abilitate a mano la prima volta
+> (`gcloud services enable cloudresourcemanager.googleapis.com run.googleapis.com artifactregistry.googleapis.com`),
+> altrimenti il primo `terraform plan` fallisce con `SERVICE_DISABLED`.
 
 ## Note
 
