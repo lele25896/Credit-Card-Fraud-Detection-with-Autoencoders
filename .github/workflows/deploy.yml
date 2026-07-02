@@ -3,8 +3,10 @@ name: Deploy to Cloud Run
 on:
   push:
     branches: [main]
+    paths-ignore: ['**.md']
   pull_request:
     branches: [main]
+    paths-ignore: ['**.md']
 
 env:
   PROJECT: fraud-detector-499714
