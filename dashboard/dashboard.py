@@ -61,6 +61,13 @@ def call_predict(features: dict) -> dict | None:
         return r.json()
     except requests.exceptions.Timeout:
         st.error("Request timed out. The API may be starting up (cold start ~30s). Try again.")
+    except requests.exceptions.HTTPError as e:
+        detail = ""
+        try:
+            detail = e.response.json().get("detail", "")
+        except Exception:
+            pass
+        st.error(f"API error {e.response.status_code}: {detail or e}")
     except requests.exceptions.RequestException as e:
         st.error(f"API error: {e}")
     return None

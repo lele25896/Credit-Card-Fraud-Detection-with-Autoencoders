@@ -198,6 +198,6 @@ def predict(transaction: TransactionFeatures):
         logger.info(json.dumps({"message": "prediction", "score": result.anomaly_score, "is_fraud": result.is_fraud}))
         return result
 
-    except Exception:
-        logger.exception(json.dumps({"message": "predict_error"}))
-        raise HTTPException(status_code=500, detail="Internal server error")
+    except Exception as exc:
+        logger.exception(json.dumps({"message": "predict_error", "error": str(exc)}))
+        raise HTTPException(status_code=500, detail=f"{type(exc).__name__}: {exc}")

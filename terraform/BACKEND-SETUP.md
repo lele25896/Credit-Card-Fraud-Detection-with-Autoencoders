@@ -1,52 +1,52 @@
-# Backend remoto GCS — setup una-tantum
+# Remote GCS backend — one-time setup
 
-Lo state Terraform passa da locale a bucket GCS (con versioning = locking + storia).
-Da eseguire una volta sola, in locale con `gcloud auth login` fatto.
+The Terraform state moves from local to a GCS bucket (with versioning = locking + history).
+Run once, locally, with `gcloud auth login` already done.
 
-## 1. Crea il bucket di state
+## 1. Create the state bucket
 
 ```powershell
 gsutil mb -p fraud-detector-499714 -l europe-west1 gs://fraud-detector-499714-tfstate
 gsutil versioning set on gs://fraud-detector-499714-tfstate
 ```
 
-## 2. Migra lo state locale nel bucket
+## 2. Migrate the local state into the bucket
 
-Dalla cartella `terraform/`:
+From the `terraform/` folder:
 
 ```powershell
 terraform init -migrate-state
-# rispondi "yes" alla domanda di copia dello state esistente nel backend gcs
+# answer "yes" to the prompt about copying the existing state into the gcs backend
 ```
 
-Poi verifica che nulla cambi:
+Then verify nothing changes:
 
 ```powershell
-terraform plan   # atteso: No changes. Infrastructure is up-to-date.
+terraform plan   # expected: No changes. Infrastructure is up-to-date.
 ```
 
-## 3. Permessi per l'apply in CI
+## 3. Permissions for apply in CI
 
-Il SA della CI (`github-ci@fraud-detector-499714.iam.gserviceaccount.com`) ora fa
-anche `terraform apply`. Serve che possa leggere/scrivere lo state e gestire l'infra:
+The CI's SA (`github-ci@fraud-detector-499714.iam.gserviceaccount.com`) now also runs
+`terraform apply`. It needs to be able to read/write the state and manage the infra:
 
 ```powershell
-# accesso allo state bucket
+# access to the state bucket
 gsutil iam ch serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount.com:roles/storage.objectAdmin gs://fraud-detector-499714-tfstate
 
-# gestione infra (se non già presenti)
+# infra management (if not already present)
 gcloud projects add-iam-policy-binding fraud-detector-499714 --member=serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount.com --role=roles/run.admin
 gcloud projects add-iam-policy-binding fraud-detector-499714 --member=serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount.com --role=roles/artifactregistry.admin
-# gestione delle google_project_service (list/enable API) nel main.tf
+# managing google_project_service resources (list/enable API) in main.tf
 gcloud projects add-iam-policy-binding fraud-detector-499714 --member=serviceAccount:github-ci@fraud-detector-499714.iam.gserviceaccount.com --role=roles/serviceusage.serviceUsageAdmin
 ```
 
-> Prerequisito una-tantum: le API vanno abilitate a mano la prima volta
+> One-time prerequisite: the APIs must be enabled by hand the first time
 > (`gcloud services enable cloudresourcemanager.googleapis.com run.googleapis.com artifactregistry.googleapis.com`),
-> altrimenti il primo `terraform plan` fallisce con `SERVICE_DISABLED`.
+> otherwise the first `terraform plan` fails with `SERVICE_DISABLED`.
 
-## Note
+## Notes
 
-- Lo state NON è più committato: `.gitignore` già esclude `*.tfstate`.
-- `terraform.tfvars` è committato apposta (nessun segreto, solo project/region/nome).
-- Su PR la CI fa solo `plan` (review); su push a `main` fa `apply` poi il deploy.
+- The state is NO LONGER committed: `.gitignore` already excludes `*.tfstate`.
+- `terraform.tfvars` is committed on purpose (no secrets, just project/region/name).
+- On a PR, CI only runs `plan` (review); on push to `main` it runs `apply` then the deploy.
