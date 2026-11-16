@@ -10,3 +10,6 @@ __pycache__/
 # no secrets in terraform.tfvars (solo project/region/service_name) — serve alla CI
 *.tfvars
 !terraform.tfvars
+
+# VibeWise learning notes (local only)
+.vibe-wise/
